@@ -1,0 +1,404 @@
+
+print('welcome to Aryavrat Bank ')
+print('what do you want to do')
+print( {1: 'withdrawl',
+        2: 'deposit',
+        3: 'money tranfer',
+        4: 'admin',
+        5: 'check balance',})
+
+def withdrawl():
+
+    import mysql.connector
+    conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+    cur = conn.cursor()
+    cur1 = conn.cursor()
+    cur2 = conn.cursor()
+    b = int(input('enter your account number'))
+    c = int(input('enter your pin'))
+    cur.execute("select pin from account where account_no=%s",(b,))
+    mypin = cur.fetchone()
+    for x in mypin :
+        if x==c:
+            print('pin matched')
+
+        else:
+            print('pin not matched')
+            exit()
+    m = int(input('enter amount you want to withdraw'))
+    cur1.execute("select balance from account where account_no=%s",(b,))
+    mybal = cur1.fetchone()
+    for y in mybal:
+        print('current balance is', y)
+        if y>=m:
+            print('enough balance')
+            p = input('are you sure to do transaction yes/no ')
+            if p == 'yes':
+                print('transaction done')
+                am = y - m
+                print('balance left',am)
+                continue
+
+            else:
+                print('transaction cancelled')
+                print('thank you visit again')
+                exit()
+        else:
+            print('not enough balance')
+            print('try again later ')
+            print('thank you')
+            exit()
+    cur2.execute("update  account  set balance = %s where account_no = %s", (am, b,))
+    conn.commit()
+    sl = input('would you like to print slip or save a tree yes/skip')
+    if sl == 'yes':
+        print('printing slip')
+        print('kindly collect your slip')
+        print('thank you ')
+        print('visit again')
+    else:
+        print('thank you for your cooperation with us in saving a tree')
+        print('visit again')
+    conn.close()
+
+def deposit():
+    import mysql.connector
+    conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+    cur1 = conn.cursor()
+    cur2 = conn.cursor()
+    b = int(input('enter your account number'))
+    c = int(input('enter amount you want to deposit'))
+    cur1.execute("select balance from account where account_no=%s", (b,))
+    mybal = cur1.fetchone()
+    for y in mybal:
+        print('current balance is', y)
+    am = y + c
+    cur2.execute("update  account  set balance = %s where account_no = %s", (am, b,))
+    conn.commit()
+    print('balance left is',am)
+    sl = input('would you like to print slip or save a tree yes/skip')
+    if sl == 'yes':
+        print('printing slip')
+        print('kindly collect your slip')
+        print('thank you ')
+        print('visit again')
+    else:
+        print('thank you for your cooperation with us in saving a tree')
+        print('visit again')
+    conn.close()
+
+def money_transfer():
+    import mysql.connector
+    conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+    cur = conn.cursor()
+    cur1 = conn.cursor()
+    cur2 = conn.cursor()
+    cur3 = conn.cursor()
+    cur4 = conn.cursor()
+    b = int(input('enter your account number'))
+    c = int(input('enter your pin'))
+    cur.execute("select pin from account where account_no=%s", (b,))
+    mypin = cur.fetchone()
+    for x in mypin:
+        if x == c:
+            print('pin matched')
+
+        else:
+            print('pin not matched')
+            exit()
+    ac = int(input('enter benificiary account number'))
+    m = int(input('enter amount you want to transfer'))
+    cur1.execute("select balance from account where account_no=%s", (b,))
+    mybal = cur1.fetchone()
+    for y in mybal:
+        print('current balance is', y)
+        if y >= m:
+            print('enough balance')
+            p = input('are you sure to do transaction yes/no ')
+            if p == 'yes':
+                print('transaction done')
+                am = y - m
+                print('balance left', am)
+                continue
+
+            else:
+                print('transaction cancelled')
+                print('thank you visit again')
+                exit()
+        else:
+            print('not enough balance')
+            print('try again later ')
+            print('thank you')
+            exit()
+    cur2.execute("update  account  set balance = %s where account_no = %s", (am, b,))
+    conn.commit()
+
+    cur3.execute("select balance from account where account_no=%s", (ac,))
+    mybal = cur1.fetchone()
+    for p in mybal:
+        p
+    am1 = p + m
+    print('benificiary balnce is',am1)
+
+    cur4.execute("update  account  set balance = %s where account_no = %s", (am1, ac,))
+    conn.commit()
+    sl = input('would you like to print slip or save a tree yes/skip')
+    if sl == 'yes':
+        print('printing slip')
+        print('kindly collect your slip')
+        print('thank you ')
+        print('visit again')
+    else:
+        print('thank you for your cooperation with us in saving a tree')
+        print('visit again')
+    conn.close()
+def admin():
+    passwd = input('enter official bank password')
+    if passwd == 'pkmkb':
+        print('access granted')
+        print({1:'open account',
+               2:'delete a account',
+               3:'change pin',
+               4: 'update'})
+
+        p = int(input('enter code of what you want to do'))
+        if p == 1:
+            import mysql.connector
+            conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+            cur = conn.cursor()
+            a = int(input('enter account no as per the regulations'))
+            b = input('enter name')
+            c = input('enter state')
+            d = input('enter city')
+            e = int(input('enter postal code'))
+            f = input('enter address ')
+            g = int(input('enter mobile no'))
+            h = input('enter account type')
+            i = 1000
+            print('an initial balance of 1000 has been credited to your account')
+            j = int(input('enter pin '))
+            cur.execute("insert into account values(%s , %s , %s , %s , %s , %s , %s , %s , %s , %s)",
+                        (a , b , c , d , e , f , g , h , i , j,))
+            conn.commit()
+            print('account opended')
+            print('welcome to our family of aryavrat bank')
+            print('thank you')
+            conn.close()
+
+        elif p == 2 :
+            import mysql.connector
+            conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+            cur = conn.cursor()
+            cur1 = conn.cursor()
+            b = int(input('enter your account number'))
+            c = int(input('enter your pin'))
+            cur.execute("select pin from account where account_no=%s", (b,))
+            mypin = cur.fetchone()
+            for x in mypin:
+                if x == c:
+                    print('pin matched')
+
+                else:
+                    print('pin not matched')
+                    exit()
+
+            d = input('are you sure to delete your account yes/no')
+            if d == 'yes':
+                cur1.execute('delete from account where account_no = %s',(b,))
+                conn.commit()
+                print('your account has been deleted')
+                print('thank you')
+                print('visit again')
+            else:
+                print('you have cancelled operation of deleting your account')
+                print('thank you')
+                print('visit again')
+            conn.close()
+
+        elif p == 3 :
+            import mysql.connector
+            conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+            cur = conn.cursor()
+            cur1 = conn.cursor()
+            a = int(input('enter your account_no'))
+            b = int(input('enter your previous pin'))
+            cur.execute("select pin from account where account_no=%s", (a,))
+            mypin = cur.fetchone()
+            for x in mypin:
+                if x == b:
+                    print('pin matched')
+
+                else:
+                    print('pin not matched')
+                    exit()
+            d = int(input('enter new pin'))
+            e = input('are you sure to do change pin yes/no')
+            if e == 'yes':
+                cur1.execute('update account set pin = %s where account_no = %s',(d,a,))
+                conn.commit()
+                print('your pin has been changed')
+                print('thank you')
+                print('visit again')
+            else:
+                print('your pin has not been changed')
+                print('thank you ')
+                print('visit again')
+            conn.close()
+        elif p == 4:
+            import mysql.connector
+            conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+            cur = conn.cursor()
+            cur1 = conn.cursor()
+            a = int(input('enter your account_no'))
+            b = int(input('enter your pin'))
+            cur.execute("select pin from account where account_no=%s", (a,))
+            mypin = cur.fetchone()
+            for x in mypin:
+                if x == b:
+                    print('pin matched')
+
+                else:
+                    print('pin not matched')
+                    exit()
+            print({1:'name',
+                   2:'state',
+                   3:'city',
+                   4:'postal code',
+                   5:'address',
+                   6:'mobile no',
+                   7:'account type',})
+            q = int(input('enter code of field you want to update'))
+            if q == 1 :
+                m = input('enter new name')
+                p = input('are you sure to update name yes/no' )
+                if p == 'yes':
+                    cur1.execute('update account set name = %s where account_no =%s',(m,a))
+                    conn.commit()
+                    print('name changed')
+                else:
+                    print('name has not been changed')
+                    exit()
+            elif q == 2:
+                m = input('enter state')
+                p = input('are you sure to update state yes/no')
+                if p == 'yes':
+                    cur1.execute('update account set state = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('state changed')
+                else:
+                    print('state has not been changed')
+                    exit()
+
+            elif q == 3:
+                m = input('enter city')
+                p = input('are you sure to update city yes/no')
+                if p == 'yes':
+                    cur1.execute('update account set city = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('city changed')
+                else:
+                    print('city has not been changed')
+                    exit()
+
+
+            elif q == 4:
+                m = int(input('enter postal code'))
+                p = input('are you sure to update postal code')
+                if p == 'yes':
+                    cur1.execute('update account set postal_code = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('postal code changed')
+                else:
+                    print('postal has not been changed')
+                    exit()
+
+
+            elif q == 5:
+                m = int(input('enter new address'))
+                p = input('are you sure to update address')
+                if p == 'yes':
+                    cur1.execute('update account set address = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('address changed')
+                else:
+                    print('address has not been changed')
+                    exit()
+
+
+            elif q == 6:
+                m = int(input('enter new mobile no'))
+                p = input('are you sure to update mobile no')
+                if p == 'yes':
+                    cur1.execute('update account set mobile_no = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('mobile no changed')
+                else:
+                    print('mobile no has not been changed')
+                    exit()
+
+
+            elif q == 7:
+                m = input('enter new account type ')
+                p = input('are you sure to update account type')
+                if p == 'yes':
+                    cur1.execute('update account set account_type = %s where account_no =%s', (m, a))
+                    conn.commit()
+                    print('account type changed')
+                else:
+                    print('account type has not been changed')
+                    exit()
+
+            conn.close()
+    else:
+        print('access denied')
+        exit()
+
+def check_balance():
+    import mysql.connector
+    conn = mysql.connector.connect(host='localhost', user='root', passwd='12345', database='bank')
+    cur = conn.cursor()
+    cur1 = conn.cursor()
+    b = int(input('enter your account number'))
+    c = int(input('enter your pin'))
+    cur.execute("select pin from account where account_no=%s", (b,))
+    mypin = cur.fetchone()
+    for x in mypin:
+        if x == c:
+            print('pin matched')
+
+        else:
+            print('pin not matched')
+            exit()
+    cur1.execute('select balance from account where account_no = %s',(b,))
+    mybal = cur1.fetchone()
+    for i in mybal:
+        print('your balance is',i)
+        print('thank you ')
+        print('visit again')
+    conn.close()
+
+
+
+            
+
+
+
+
+n=int(input('enter code of work you want to perform'))
+if n == 1:
+    withdrawl()
+elif n == 2:
+    deposit()
+elif n == 3:
+    money_transfer()
+elif n == 4:
+    admin()
+elif n == 5:
+    check_balance()
+
+
+
+
+
+
+
